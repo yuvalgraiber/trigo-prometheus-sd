@@ -6,7 +6,7 @@ In addition, the store operators can change the participating sensors so the inv
 In this exercise, we will implement a custom service discovery mechanism for [Prometheus](https://prometheus.io/). This will ensure that Prometheus continues to monitor the correct sensor inventory, even as the sensor configuration changes dynamically.
 
 # Exercise
-The [inventory service](https://github.com/trigovision/devops_exercise/tree/main/inventory_server) will be used to expose an http endpoint that yields a list of hosts of the current active sensors.
+The inventory service] will be used to expose an http endpoint that yields a list of hosts of the current active sensors.
 
 Specifically, invoking the following command:
 ```
