@@ -54,3 +54,35 @@ Note that the hosts provided by the inventory are dummy, and that's fine if your
 * You may use any language, framework, library, or code snippets you find helpful.
 * You may use any source of information, including AI tools. Please note that we can identify submissions generated with AI, and in such cases, stricter evaluation criteria may be applied.
 * If anything is unclear, ask us — we are happy to help.
+
+Solution README by Yuval Graiber:
+# Prometheus Custom Service Discovery
+
+## Overview
+This project implements a custom service discovery mechanism for Prometheus, designed to monitor a dynamic set of proprietary sensors. Since these sensors are resource-constrained and cannot run modern agents, this solution uses an **adapter-based** approach.
+
+## Architecture
+The system consists of three main components:
+1. **Inventory Server**: A mock service that provides the current list of active sensors via an HTTP API.
+2. **Discovery Adapter**: A Python-based microservice that periodically fetches the inventory and updates a shared JSON file.
+3. **Prometheus**: Configured with `file_sd_configs` to watch the shared JSON file and scrape the sensors dynamically.
+
+## Setup & Deployment
+To deploy the entire monitoring stack, use Docker Compose:
+
+Bash:
+docker-compose up -d --build
+
+The adapter polls the inventory_server every 30 seconds
+It formats the sensor list into the Prometheus-compatible JSON structure:
+[
+  {
+    "targets": ["sensor_0:80", "sensor_1:80", "..."]
+  }
+]
+The file is mapped via a Docker volume to the Prometheus container, enabling real-time service discovery updates without restarting Prometheus.
+
+Monitoring
+You can access the Prometheus dashboard at: http://localhost:9090
+Navigate to Status > Targets to view the dynamically discovered sensors.
+Note: As these sensors are simulated, they will appear as DOWN in the dashboard, which confirms the discovery mechanism is successfully reaching them.
