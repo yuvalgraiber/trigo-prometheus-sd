@@ -1,6 +1,6 @@
-FROM python:3.13-slim
+FROM python:3.14-slim
 
-RUN python3 -m pip install flask
+RUN python3 -m pip install flask==3.1.3
 WORKDIR /code
 
 COPY main.py main.py
