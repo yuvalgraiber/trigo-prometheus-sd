@@ -1,0 +1,25 @@
+services:
+  inventory_server:
+    build: ./inventory_server
+    ports:
+      - "1337:1337"
+
+  adapter:
+    build: ./discovery_adapter
+    volumes:
+      - shared_data:/etc/prometheus  # <--- MUST match this
+    depends_on:
+      - inventory_server
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - shared_data:/etc/prometheus    # <--- MUST match this
+    ports:
+      - "9090:9090"
+    depends_on:
+      - adapter
+
+volumes:
+  shared_data:
