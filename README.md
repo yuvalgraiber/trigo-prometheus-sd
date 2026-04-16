@@ -1,18 +1,23 @@
 # Prometheus Custom Service Discovery
-In Trigo's solution there are many proprietary sensors based on embedded microcontrollers running bare-metal OS under hard resources limit (low cpu, low memory). Those sensors cannot run any modern tools such as Docker, Consul agents and so on but do expose an http server with a dedicated metrics endpoint.
 
-In addition, the store operators can change the participating sensors so the inventory of sensors can be updated quite often.
+Trigo’s solution includes proprietary sensors based on embedded microcontrollers running bare-metal software under tight resource limits (low CPU, low memory). Those devices cannot run modern tooling such as Docker or Consul agents, but they do expose an HTTP server with a dedicated metrics endpoint.
 
-In this exercise, we will implement a custom service discovery mechanism for [Prometheus](https://prometheus.io/). This will ensure that Prometheus continues to monitor the correct sensor inventory, even as the sensor configuration changes dynamically.
+Store operators can change which sensors participate, so the active inventory updates frequently.
+
+In this exercise, you will implement a custom service discovery mechanism for [Prometheus](https://prometheus.io/) so that Prometheus keeps monitoring the correct set of sensors as configuration changes.
 
 # Exercise
-The inventory service] will be used to expose an http endpoint that yields a list of hosts of the current active sensors.
 
-Specifically, invoking the following command:
+The [inventory service](./inventory_server/) exposes an HTTP endpoint that returns the list of hosts for the currently active sensors.
+
+For example:
+
 ```
 curl -XGET http://localhost:1337/inventory
 ```
-will yield the current sensors hostnames to monitor:
+
+returns the hostnames to monitor:
+
 ```
 [
     "sensor_1",
@@ -22,13 +27,30 @@ will yield the current sensors hostnames to monitor:
 ]
 ```
 
-Your goal in this exercise is to:
-* Implement a custom service discovery for Prometheus which queries the described endpoint (in the `inventory service`) and yields a target group containing the sensors targets.
-* Write a minimal docker-compose / helm chart that runs the entire stack, having a Prometheus instance trying to scrape the sensors inventory with an exposed HTTP port (tcp/9090).
+# Requirements
 
-# Additional Notes
-* Don't modify the `inventory service` code.
-* Clone this repository and upload your solution to your personal account (don't fork), and then provide us with a link (and permissions).
-* You have up to 2 hours to complete the exercise.
-* Feel free to code it in any language you would like and use any framework / library / snippet of code you find.
-* We are available to answer any questions you may have, so feel free to ask :smile:.
+## Goals
+
+* **Service discovery:** Implement custom Prometheus service discovery that queries the inventory endpoint and produces target groups for those sensors.
+* **Runtime stack:** Provide a minimal Docker Compose file *or* Helm chart that runs the full stack, with Prometheus listening on HTTP **TCP 9090** and configured to scrape the sensor targets via your discovery.
+
+Note that the hosts provided by the inventory are dummy, and that's fine if your Prometheus isn't able to connect to them. The goal is just to add them as targets.
+
+## Quality
+
+* Keep the solution clear and maintainable, follow sensible best practices, and prefer current stable versions of dependencies where practical.
+
+## Constraints
+
+* Do not modify the inventory service code.
+* Complete the exercise within **two hours** (maximum).
+
+## Submission
+
+* Fork this repository, push your solution, open a pull request to our repository, and send us a link.
+
+## Tools, references, and questions
+
+* You may use any language, framework, library, or code snippets you find helpful.
+* You may use any source of information, including AI tools. Please note that we can identify submissions generated with AI, and in such cases, stricter evaluation criteria may be applied.
+* If anything is unclear, ask us — we are happy to help.
